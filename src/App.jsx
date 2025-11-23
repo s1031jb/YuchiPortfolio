@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Phone, Mail, Linkedin, ArrowRight, ChevronRight, ExternalLink, MousePointer2, Layers, Layout, PenTool } from 'lucide-react';
 
+// ------------------------------------------------------------------
+// 圖片路徑：更新為您提供的 GitHub 連結
+// ------------------------------------------------------------------
+const profileImage = "https://github.com/user-attachments/assets/21163382-6a81-414d-b111-080b9259988f";
+
 const Portfolio = () => {
   const [activeTab, setActiveTab] = useState('home');
   const [selectedProject, setSelectedProject] = useState(null);
@@ -15,6 +20,11 @@ const Portfolio = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Scroll to top on tab change
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [activeTab, selectedProject]);
+
   const navItems = [
     { id: 'home', label: 'Home' },
     { id: 'resume', label: 'Resume' },
@@ -22,17 +32,14 @@ const Portfolio = () => {
     { id: 'contact', label: 'Contact' }
   ];
 
-  // User Data
   const personalInfo = {
     name: "Yuchi Chang",
     title: "Designing the future of multi-device interaction.",
     bio: "Senior Interaction Designer specializing in peripheral software ecosystems. I craft intuitive, multi-device experiences that make keyboards, mice, hubs, and styluses feel seamless and delightful.",
     phone: "+886 958 644 522",
     email: "s1031jb@gmail.com",
-    linkedin: "https://www.linkedin.com/in/yuchi-chang-762440150/", 
-    // 重要：請確保您的照片檔名是 S__32661507.jpg 並且放在 public 資料夾中
-    // 部署到 GitHub Pages 時，路徑通常建議使用絕對路徑或 import 方式，這邊使用根目錄引用
-    image: "https://github.com/user-attachments/assets/21163382-6a81-414d-b111-080b9259988f" 
+    linkedin: "linkedin.com/in/yuchichang", 
+    image: profileImage
   };
 
   const projects = [
@@ -164,9 +171,7 @@ const Portfolio = () => {
             </button>
           ))}
         </div>
-        {/* Mobile Nav Toggle could go here */}
         <div className="md:hidden flex space-x-4 text-sm">
-           {/* Simplified mobile nav for this demo */}
            <button onClick={() => setActiveTab('projects')} className="text-gray-600">Projects</button>
            <button onClick={() => setActiveTab('contact')} className="text-gray-600">Contact</button>
         </div>
@@ -229,20 +234,28 @@ const Portfolio = () => {
           </div>
         </div>
 
-        {/* Hero Image - Blended */}
-        <div className="order-1 md:order-2 relative h-[400px] md:h-[600px] w-full flex items-center justify-center">
-          {/* Blob Background for depth */}
+        {/* Hero Image - Google Style (Fixed Visibility) */}
+        {/* 1. 移除了 animate-scale-in 等進場動畫，防止卡住 */}
+        {/* 2. 移除了所有 mask 遮罩 div */}
+        {/* 3. 加上了 z-10 確保層級 */}
+        <div className="order-1 md:order-2 relative h-[400px] md:h-[600px] w-full flex items-center justify-center z-10">
+          {/* Blob Background for depth - 放在 z-0 */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 h-3/4 bg-blue-100 rounded-full blur-3xl opacity-50 -z-10"></div>
           
           <div className="relative w-full h-full overflow-hidden rounded-[3rem]">
-             {/* Image Container with Gradient Mask for seamless blending */}
-             <div className="w-full h-full relative">
+             <div className="w-full h-full relative bg-gray-50"> {/* 增加一個淺灰背景，如果圖片讀取慢至少有個底 */}
                 <img 
                   src={personalInfo.image} 
                   alt="Yuchi Chang" 
-                  className="w-full h-full object-cover object-top"
+                  className="w-full h-full object-cover object-top block" // 加上 block 確保不被視為 inline
+                  style={{ opacity: 1 }} // 強制不透明
+                  onError={(e) => {
+                    console.error("Image load failed:", e);
+                    e.target.style.display = 'none';
+                    e.target.parentNode.innerHTML = `<div class="flex items-center justify-center h-full text-gray-400 bg-gray-100 border-2 border-dashed">Image Path Error: ${personalInfo.image}</div>`;
+                  }}
                 />
-                {/* The Gradient Mask Overlays */}
+                {/* 遮罩已完全移除 */}
              </div>
           </div>
         </div>

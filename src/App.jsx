@@ -243,8 +243,6 @@ const Portfolio = () => {
                   className="w-full h-full object-cover object-top"
                 />
                 {/* The Gradient Mask Overlays */}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#FDFDFD] via-transparent to-transparent opacity-100 pointer-events-none h-full w-full"></div>
-                <div className="absolute inset-0 bg-gradient-to-l from-transparent via-transparent to-[#FDFDFD] opacity-60 md:opacity-100 pointer-events-none h-full w-full"></div>
              </div>
           </div>
         </div>
